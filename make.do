@@ -11,5 +11,5 @@ make cto_read, replace toc pkg readme version(1.0.0)                         ///
      url("")                                                                 ///
      title("Command to clean SurveyCTO rawdata")                             ///
      description("Command to clean SurveyCTO rawdata")                       ///
-     install("cto_read.sthlp;cto_read.ado;cto_read.ado;cto_read.sthlp;cto_read.ado;cto_read.sthlp") ///
+     install("cto_read.sthlp;cto_read.ado;cto_read.ado;cto_read.sthlp;cto_read.ado;cto_read.sthlp;cto_read.ado;cto_read.sthlp") ///
      iancillary("")                                                         
