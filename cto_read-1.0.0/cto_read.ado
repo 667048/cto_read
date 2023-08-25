@@ -1,6 +1,6 @@
 *! cto_read.ado - Stata module to import and minimally clean SurveyCTO data
 *! Author: Michael Rozelle <michael.rozelle@wur.nl>
-*! Version 0.0.2  Modified:  March 2023
+*! Version 1.0.2  Modified:  March 2023
 
 // Drop the cto_read program if it already exists
 cap program drop cto_read
@@ -865,7 +865,7 @@ local v = `v'-1
 
 // Now we're about to write the instructions to a dofile. Buckle up
 
-file open myfile using "`dofile'.do", write text replace
+file open myfile using "`dofile'", write text replace
 
 *===============================================================================
 * 	Write Variables
@@ -957,7 +957,7 @@ if `want_reshape' == 1 {
 		levelsof repeat_group if missing(nest_), clean local(standalone)
 		levelsof repeat_group if !missing(nest_), clean local(nesteds)
 		
-		file open myfile2 using "`reshapefile'.do", write text replace
+		file open myfile2 using "`reshapefile'", write text replace
 		file write myfile2 ///
 			"/*" ///
 			_n "Title: Reshape Dofile for `file_short'" ///
