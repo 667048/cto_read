@@ -1,12 +1,12 @@
-_v. 1.0.0_  
+_v. 1.0.2_  
 
-`cto_read` : Command to clean SurveyCTO rawdata
-===============================================
+`cto_read` : Command for cleaning SurveyCTO data
+================================================
 
 Description
 -----------
 
-Command to clean SurveyCTO rawdata
+Command for cleaning SurveyCTO data
 
 ### License
 Academic Free License v3.0

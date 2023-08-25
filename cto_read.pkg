@@ -1,16 +1,10 @@
-v 1.0.0
-d 'CTO_READ': Command to clean SurveyCTO rawdata
+v 1.0.2
+d 'CTO_READ': Command for cleaning SurveyCTO data
 d 
-d Command to clean SurveyCTO rawdata
+d Command for cleaning SurveyCTO data
 d 
-d Distribution-Date:   20230824
+d Distribution-Date:   20230825
 d License: Academic Free License v3.0
 d 
 F cto_read.ado
-F cto_read.ado
-F cto_read.ado
-F cto_read.ado
-F cto_read.sthlp
-F cto_read.sthlp
-F cto_read.sthlp
 F cto_read.sthlp
