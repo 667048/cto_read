@@ -14,7 +14,8 @@ syntax, ///
 	DOfile(string) ///
 	[RESHAPEfile(string) ///
 	IDENTIFIERS(namelist) ///
-	AMERICAN]
+	AMERICAN ///
+	SAVEfolder(string)]
  
 version 17
 
@@ -863,8 +864,10 @@ local v = `v'-1
 * 	Open File
 *===============================================================================
 
-// Now we're about to write the instructions to a dofile. Buckle up
+if "`savefolder'" != "" cap mkdir "`savefolder'"
 
+// Now we're about to write the instructions to a dofile. Buckle up
+cap file close myfile
 file open myfile using "`dofile'", write text replace
 
 *===============================================================================
@@ -1016,8 +1019,17 @@ if `want_reshape' == 1 {
 				"}" _n(2) ///
 				"isid key \`group_name'_key" _n ///
 				"drop survey" _n ///
-				`"label data "`desc'-level data from `file_short'""' _n(2) ///
-				"cwf survey"
+				`"label data "`desc'-level data from `file_short'""' _n
+				
+			if "`savefolder'" != "" {
+				
+				file write myfile2 ///
+					`"save "`macval(savefolder)'/\`group_name'.dta", replace"' _n(2) 
+				
+			}
+
+			file write myfile2 `"cwf survey"' _n
+					
 			
 		}
 		
@@ -1092,14 +1104,27 @@ if `want_reshape' == 1 {
 					"// check ids are intact" _n ///
 					"isid key `desc'_key `w_desc'_key" _n(2) ///
 					"drop `w_desc' reshape_id" _n ///
-					`"label data "`desc'-level data by `w_desc' from `file_short'""' _n(2) ///
-					"cwf survey"
+					`"label data "`desc'-level data by `w_desc' from `file_short'""' _n
 					
 			}
 			
+			if "`savefolder'" != "" {
+				
+				file write myfile2 ///
+					`"save "`macval(savefolder)'/\`group_name'.dta", replace"' _n(2)
+				
+			}
+
+			file write myfile2 `"cwf survey"' _n
+			
 		}
-	
-	
+		
+		if "`savefolder'" != "" {
+				
+				file write myfile2 ///
+					`"save "`macval(savefolder)'/survey.dta", replace"' _n(2)
+				
+		}
 		file close myfile2
 		
 		
