@@ -1017,7 +1017,7 @@ if `want_reshape' == 1 {
 				"frlink m:1 key, frame(survey)" _n ///
 				`"if "\`frgetvars'" != "" {"' _n(2) ///
 				_tab `"frame survey: ds"' _n _tab `"local vars_in_data \`r(varlist)'"' _n ///
-				_tab "local vars_to_get : list vars_in_data in frgetvars" _n ///
+				_tab "local vars_to_get : list vars_in_data & frgetvars" _n ///
 				_tab "frget \`vars_to_get', from(survey)" _n(2) ///
 				"}" _n(2) ///
 				"isid key \`group_name'_key" _n ///
@@ -1104,7 +1104,7 @@ if `want_reshape' == 1 {
 					"frlink m:1 `w_desc'_key key, frame(`w_desc')" _n ///
 					`"if "\`frgetvars'" != "" {"' _n(2) ///
 					_tab `"frame `w_desc': ds"' _n _tab `"local vars_in_data \`r(varlist)'"' _n ///
-					_tab "local vars_to_get : list vars_in_data in frgetvars" _n ///
+					_tab "local vars_to_get : list vars_in_data & frgetvars" _n ///
 					_tab "frget \`vars_to_get', from(`w_desc')" _n(2) /// 
 					"}" _n(2) ///
 					"// check ids are intact" _n ///

@@ -1,4 +1,4 @@
-_v. 1.0.5_  
+_v. 1.0.6_  
 
 `cto_read` : Command to clean SurveyCTO data
 ============================================
