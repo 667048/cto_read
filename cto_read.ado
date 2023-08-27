@@ -960,6 +960,7 @@ if `want_reshape' == 1 {
 		levelsof repeat_group if missing(nest_), clean local(standalone)
 		levelsof repeat_group if !missing(nest_), clean local(nesteds)
 		
+		cap file close myfile2
 		file open myfile2 using "`reshapefile'", write text replace
 		file write myfile2 ///
 			"/*" ///
@@ -1014,8 +1015,10 @@ if `want_reshape' == 1 {
 				"cwf \`group_name'" _n "drop if missing(`desc'_index)" _n ///
 				`"renvars *_, postsub("_" "")"' _n ///
 				"frlink m:1 key, frame(survey)" _n ///
-				`"if "\`frgetvars'" != "" {"' _n ///
-				_tab "frget \`frgetvars', from(survey)" _n ///
+				`"if "\`frgetvars'" != "" {"' _n(2) ///
+				_tab `"frame survey: ds"' _n _tab `"local vars_in_data \`r(varlist)'"' _n ///
+				_tab "local vars_to_get : list vars_in_data in frgetvars" _n ///
+				_tab "frget \`vars_to_get', from(survey)" _n(2) ///
 				"}" _n(2) ///
 				"isid key \`group_name'_key" _n ///
 				"drop survey" _n ///
@@ -1099,8 +1102,11 @@ if `want_reshape' == 1 {
 					"// if it's missing this, then it shouldn't be in the dataset" _n ///
 					"drop if missing(`desc'_index)" _n(2) ///
 					"frlink m:1 `w_desc'_key key, frame(`w_desc')" _n ///
-					`"if "\`frgetvars'" != "" {"' _n ///
-					_tab "frget \`frgetvars', from(`w_desc')" _n "}" _n(2) ///
+					`"if "\`frgetvars'" != "" {"' _n(2) ///
+					_tab `"frame `w_desc': ds"' _n _tab `"local vars_in_data \`r(varlist)'"' _n ///
+					_tab "local vars_to_get : list vars_in_data in frgetvars" _n ///
+					_tab "frget \`vars_to_get', from(`w_desc')" _n(2) /// 
+					"}" _n(2) ///
 					"// check ids are intact" _n ///
 					"isid key `desc'_key `w_desc'_key" _n(2) ///
 					"drop `w_desc' reshape_id" _n ///

@@ -3,7 +3,7 @@
 // DO NOT FORGET to update the version of the package, if changed!
 // for more information visit http://github.com/haghish/github
 
-make cto_read, replace toc pkg readme version(1.0.4)                         ///
+make cto_read, replace toc pkg readme version(1.0.5)                         ///
      license("Academic Free License v3.0")                                   ///
      author("Michael Rozelle")                                               ///
      affiliation("Wageningen University and Research")                       ///
@@ -11,5 +11,5 @@ make cto_read, replace toc pkg readme version(1.0.4)                         ///
      url("")                                                                 ///
      title("Command to clean SurveyCTO data")                                ///
      description("Command to clean SurveyCTO data")                          ///
-     install("cto_read.ado;cto_read.sthlp")                                  ///
+     install("cto_read.sthlp;cto_read.ado")                                  ///
      iancillary("")                                                         
