@@ -659,7 +659,7 @@ quietly foreach var in `variables' { // for each question in the instrument
 	else {
 		
 		if `type'==1 {
-			gen cmd_`v' = `"cap tostring \`var', replace `brek' `tab'cap replace \`var' = "" if \`var' == ".""'
+			gen cmd_`v' = `"cap tostring \`var', replace"'
 		}
 		
 		if `type'==2 {
@@ -788,7 +788,7 @@ quietly foreach var in `variables' { // for each question in the instrument
 					local varlist`f' : subinstr local varlist "`var'" "`var'_`value'", all
 					
 					frame qs {
-						replace loop_`v' = loop_`v' + `"foreach var in `varlist' { `brek'`tab' cap label variable \`var' `stlabel' `brek'`tab'cap tostring \`var', replace `brek'`tab'cap replace \`var' = "" if \`var' == "." `brek'} `brek'"'
+						replace loop_`v' = loop_`v' + `"foreach var in `varlist' { `brek'`tab' cap label variable \`var' `stlabel' `brek'`tab'cap tostring \`var', replace `brek'} `brek'"'
 						replace loop_`v' = loop_`v' + `"foreach var in `varlist`f'' { `brek'`tab'cap label variable \`var' "#{`var'}: `lab'" `brek' `tab'cap notes \`var': "#{`var'}: `lab'" `brek'`tab'cap destring \`var', replace `brek'`tab'cap notes \`var': "relevance conditions: `unlock'" `brek'} `brek' `brek'"'
 						local reshape_2 : word 1 of `varlist`f''
 						local length = strlen("`reshape_2'") - 1
@@ -809,7 +809,7 @@ quietly foreach var in `variables' { // for each question in the instrument
 		else {
 			
 			if `type'==1 {
-				gen loop_`v' = `"cap label variable `var' `stlabel' `brek' cap notes `var': `enlabel' `brek' cap notes `var': "relevance conditions: `unlock'" `brek' cap tostring `var', replace `brek' cap replace `var' = "" if `var' == "."`brek'"'
+				gen loop_`v' = `"cap label variable `var' `stlabel' `brek' cap notes `var': `enlabel' `brek' cap notes `var': "relevance conditions: `unlock'" `brek' cap tostring `var', replace `brek'"'
 			}
 			
 			if `type'==2 {
@@ -833,7 +833,7 @@ quietly foreach var in `variables' { // for each question in the instrument
 			}
 
 			if `type'==3 {
-			gen loop_`v' = `"cap label variable `var' `stlabel' `brek' tostring `var', replace `brek' cap replace `var' = "" if `var' == ".", replace"'
+			gen loop_`v' = `"cap label variable `var' `stlabel' `brek' tostring `var', replace"'
 			frame choices: levelsof order if list_name=="`vallabel'"
 			frame choices: foreach row in `r(levels)' {
 				levelsof name if order==`row', local(value) clean
