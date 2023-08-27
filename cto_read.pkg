@@ -1,7 +1,7 @@
 v 1.0.4
-d 'CTO_READ': Command for cleaning SurveyCTO data
+d 'CTO_READ': Command to clean SurveyCTO data
 d 
-d Command for cleaning SurveyCTO data
+d Command to clean SurveyCTO data
 d 
 d Distribution-Date:   20230827
 d License: Academic Free License v3.0

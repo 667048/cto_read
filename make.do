@@ -9,7 +9,7 @@ make cto_read, replace toc pkg readme version(1.0.4)                         ///
      affiliation("Wageningen University and Research")                       ///
      email("michael.rozelle@wur.nl")                                         ///
      url("")                                                                 ///
-     title("Command for cleaning SurveyCTO data")                            ///
-     description("Command for cleaning SurveyCTO data")                      ///
+     title("Command to clean SurveyCTO data")                                ///
+     description("Command to clean SurveyCTO data")                          ///
      install("cto_read.ado;cto_read.sthlp")                                  ///
      iancillary("")                                                         

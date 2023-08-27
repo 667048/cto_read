@@ -3,6 +3,6 @@ d Materials by Michael Rozelle
 d Wageningen University and Research
 d michael.rozelle@wur.nl
 
-d 'cto_read': Command for cleaning SurveyCTO data
+d 'cto_read': Command to clean SurveyCTO data
 
 p cto_read
