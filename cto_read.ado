@@ -373,6 +373,7 @@ frame repeat_groups {
 		
 	}
 
+	cap gen nest_1 = .
 	
 	forvalues i = 1/`repeat_groups' {
 		levelsof start in `i', clean local(start)
@@ -952,7 +953,7 @@ if `want_reshape' == 1 {
 	local file_short = regexs(0)
 	
 	frame repeat_groups {
-	
+			
 		reshape long nest_, i(repeat_group) j(inside)
 		bysort repeat_group (inside) : drop if (nested == 0 & _n != 1) | ///
 			(nested == 1 & missing(nest_))
@@ -1013,7 +1014,7 @@ if `want_reshape' == 1 {
 				"frame put \$shape_`g' `identifying_vars' \`group_name'_key, into(\`group_name')" _n ///
 				"drop \$shape_`g' \`group_name'_key" ///
 				_n "bysort key: keep if _n == 1" _n(2) ///
-				"cwf \`group_name'" _n "drop if missing(`desc'_index)" _n ///
+				"cwf \`group_name'" _n "missings dropobs \$shape_`g', force" _n ///
 				`"renvars *_, postsub("_" "")"' _n ///
 				"frlink m:1 key, frame(survey)" _n ///
 				`"if "\`frgetvars'" != "" {"' _n(2) ///
@@ -1030,7 +1031,7 @@ if `want_reshape' == 1 {
 			if "`savefolder'" != "" {
 				
 				file write myfile2 ///
-					`"save "`macval(savefolder)'/\`group_name'.dta", replace"' _n(2) 
+					`"save "`macval(savefolder)'/\`group_name'.dta", replace"' _n
 				
 			}
 
@@ -1100,10 +1101,10 @@ if `want_reshape' == 1 {
 					"foreach var of varlist \`all_invars' {" _n ///
 					_tab `"cap label variable \`var' "\`X_\`var''""' _n ///
 					"}" _n(2) ///
+					"// if it's missing this, then it shouldn't be in the dataset" _n ///
+					`"missings dropobs \`all_invars', force"' _n(2) ///
 					"// get rid of the spare underscore again" _n ///
 					`"renvars *_, postsub("_" "")"' _n(2) ///
-					"// if it's missing this, then it shouldn't be in the dataset" _n ///
-					`"drop if missing(`desc'_index)"' _n(2) ///
 					`"frlink m:1 `w_desc'_key key, frame(`w_desc')"' _n ///
 					`"if "\`frgetvars'" != "" {"' _n(2) ///
 					_tab `"frame `w_desc': ds"' _n _tab `"local vars_in_data \`r(varlist)'"' _n ///
@@ -1133,7 +1134,7 @@ if `want_reshape' == 1 {
 		if "`savefolder'" != "" {
 				
 				file write myfile2 ///
-					`"save "`macval(savefolder)'/survey.dta", replace"' _n(2)
+					`"save "`macval(savefolder)'/survey.dta", replace"' _n
 				
 		}
 		file close myfile2
