@@ -15,7 +15,8 @@ syntax, ///
 	[RESHAPEfile(string) ///
 	IDENTIFIERS(namelist) ///
 	AMERICAN ///
-	SAVEfolder(string)]
+	SAVEfolder(string) ///
+	FRGETVARS(namelist)]
  
 version 17
 
@@ -151,7 +152,7 @@ keep list_name name label
 missings dropobs, force 
 
 // Remove any rows where the "name" variable is not a number (i.e. non-standard labeling)
-drop if !regexm(name, "^[0-9]+$") 
+drop if !regexm(name, "^[0-9\-]+$") 
 
 // Create a new variable called "order" to retain the original order of variables in the instrument
 gen order = _n 
@@ -991,7 +992,7 @@ if `want_reshape' == 1 {
 		"*===============================================================================" ///
 		_n(2) "frame rename default survey" _n ///
 		`"label data "Survey-level data from `file_short'""' _n(2) ///
-		"local frgetvars"
+		`"local frgetvars `frgetvars'"'
 	
 		foreach g in `standalone' {
 				
@@ -1017,8 +1018,10 @@ if `want_reshape' == 1 {
 				"frlink m:1 key, frame(survey)" _n ///
 				`"if "\`frgetvars'" != "" {"' _n(2) ///
 				_tab `"frame survey: ds"' _n _tab `"local vars_in_data \`r(varlist)'"' _n ///
-				_tab "local vars_to_get : list vars_in_data & frgetvars" _n ///
-				_tab "frget \`vars_to_get', from(survey)" _n(2) ///
+				_tab `"ds"' _n _tab `"local currvars \`r(varlist)'"' _n ///
+				_tab "local vars_to_get : list frgetvars & vars_in_data" _n ///
+				_tab "local vars_to_get : list vars_to_get - currvars" _n ///
+				_tab `"if "\`vars_to_get'" != "" frget \`vars_to_get', from(survey)"' _n(2) ///
 				"}" _n(2) ///
 				"isid key \`group_name'_key" _n ///
 				"drop survey" _n ///
@@ -1100,12 +1103,14 @@ if `want_reshape' == 1 {
 					"// get rid of the spare underscore again" _n ///
 					`"renvars *_, postsub("_" "")"' _n(2) ///
 					"// if it's missing this, then it shouldn't be in the dataset" _n ///
-					"drop if missing(`desc'_index)" _n(2) ///
-					"frlink m:1 `w_desc'_key key, frame(`w_desc')" _n ///
+					`"drop if missing(`desc'_index)"' _n(2) ///
+					`"frlink m:1 `w_desc'_key key, frame(`w_desc')"' _n ///
 					`"if "\`frgetvars'" != "" {"' _n(2) ///
 					_tab `"frame `w_desc': ds"' _n _tab `"local vars_in_data \`r(varlist)'"' _n ///
-					_tab "local vars_to_get : list vars_in_data & frgetvars" _n ///
-					_tab "frget \`vars_to_get', from(`w_desc')" _n(2) /// 
+					_tab `"ds"' _n _tab `"local currvars \`r(varlist)'"' _n ///
+					_tab `"local vars_to_get : list frgetvars & vars_in_data"' _n ///
+					_tab `"local vars_to_get : list vars_to_get - currvars"' _n ///
+					_tab `"if "\`vars_to_get'" != "" frget \`vars_to_get', from(`w_desc')"' _n(2) /// 
 					"}" _n(2) ///
 					"// check ids are intact" _n ///
 					"isid key `desc'_key `w_desc'_key" _n(2) ///
