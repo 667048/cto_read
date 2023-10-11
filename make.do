@@ -11,5 +11,4 @@ make cto_read, replace toc pkg readme version(1.10)                          ///
      url("")                                                                 ///
      title("Command for cleaning SurveyCTO output data")                     ///
      description("Command for cleaning SurveyCTO output data")               ///
-     install("cto_read.ado;cto_read.sthlp")                                  ///
-     iancillary("")                                                         
+     install("cto_read.ado;cto_read.sthlp")                                                                                    

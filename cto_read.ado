@@ -16,7 +16,8 @@ syntax, ///
 	IDENTIFIERS(namelist) ///
 	AMERICAN ///
 	SAVEfolder(string) ///
-	FRGETVARS(namelist)]
+	FRGETVARS(namelist) ///
+	DEIDVARS(namelist)]
  
 version 17
 
@@ -994,6 +995,10 @@ if `want_reshape' == 1 {
 		_n(2) "frame rename default survey" _n ///
 		`"label data "Survey-level data from `file_short'""' _n(2) ///
 		`"local frgetvars `frgetvars'"'
+		if "`deidvars'" != "" {
+			file write myfile2 _n `"local deidvars `deidvars'"'
+		}
+	
 	
 		foreach g in `standalone' {
 				
@@ -1027,6 +1032,16 @@ if `want_reshape' == 1 {
 				"isid key \`group_name'_key" _n ///
 				"drop survey" _n ///
 				`"label data "`desc'-level data from `file_short'""' _n
+				
+			if "`deidvars'" != "" {
+			
+				file write myfile2 _n ///
+				`"ds"' _n ///
+				`"local currvars \`r(varlist)'"' _n ///
+				`"local vars_to_drop : list deidvars & currvars"' _n ///
+				`"if "\`vars_to_drop'" != "" drop \`vars_to_drop'"' _n(2)
+				
+			}
 				
 			if "`savefolder'" != "" {
 				
@@ -1120,6 +1135,16 @@ if `want_reshape' == 1 {
 					
 			}
 			
+			if "`deidvars'" != "" {
+				
+				file write myfile2 _n ///
+				`"ds"' _n ///
+				`"local currvars \`r(varlist)'"' _n ///
+				`"local vars_to_drop : list deidvars & currvars"' _n ///
+				`"if "\`vars_to_drop'" != "" drop \`vars_to_drop'"' _n(2)
+				
+			}
+			
 			if "`savefolder'" != "" {
 				
 				file write myfile2 ///
@@ -1130,6 +1155,17 @@ if `want_reshape' == 1 {
 			file write myfile2 `"cwf survey"' _n
 			
 		}
+		
+		if "`deidvars'" != "" {
+			
+			file write myfile2 _n ///
+			`"ds"' _n ///
+			`"local currvars \`r(varlist)'"' _n ///
+			`"local vars_to_drop : list deidvars & currvars"' _n ///
+			`"if "\`vars_to_drop'" != "" drop \`vars_to_drop'"' _n(2)
+			
+		}
+		
 		
 		if "`savefolder'" != "" {
 				
