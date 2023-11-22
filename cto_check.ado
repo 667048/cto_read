@@ -337,8 +337,69 @@ forvalues j = 0/`repeat_groups' {
 		
 	}
 	
+	// SURVEY DURATION CHECK
+	if `j' == 0 {
+		
+		replace command = command + ///
+		`"*------------------------------------------------------------------`brek'"' ///
+	+ `"* 	Survey Duration`brek'"' + /// 
+	`"*------------------------------------------------------------------`brek'`brek'"' + ///
+	`"preserve`brek'`brek'"' + ///
+	`"keep if `successcondition'`brek'replace duration = duration * 1e3`brek`brek''"' + ///
+	`"collapse (mean) duration, by(`enum')`brek'`brek'"' + ///
+	`"egen double duration_z = std(duration)`brek'"' + ///
+	`"generate above = (duration_z >= 0)`brek'"' + ///
+	`"sort duration_z, stable`brek'"' + ///
+	`"generate rank_des = _n`brek'"' + ///
+	`"cap sdecode `enum', replace`brek'"' + ///
+	`"labmask rank_des, value(`enum')`brek'"' + ///
+	`"generate zero = 0`brek'"' + ///
+	`"tostring duration, gen(duration_lab) force format(%tCHH:MM:SS)`brek'"' + ///
+	`"local ysize = ceil(\`c(N)'/5)`brek'`brek'"' + ///
+	`"twoway  (rspike zero duration_z rank_des, horizontal) ///`brek'"' + ///
+	`"`tab'(scatter rank_des duration_z, msize(6) mlabel(duration_lab) ///`brek'"' + ///
+	`"`tab'mlabsize(1.6) mlabposition(0)), ///`brek'"' + ///
+	`"`tab'xlabel(-3(0.5)3, nolabels noticks) ylabel(1(1)\`c(N)', ///`brek'"' + ///
+	`"`tab'valuelabel labsize(2)) legend(off) ///`brek'"' + ///
+	`"`tab'ytitle("Enumerator") name(cto_duration) ///`brek'"' + ///
+	`"`tab'title("{bf}Average Survey Duration", size(2.75) pos(11)) ///`brek'"' + ///
+	`"`tab'subtitle("When `successcondition'", size(2.5) pos(11)) ///`brek'"' + ///
+	`"`tab'scheme(white_tableau) ysize(\`ysize') ///`brek'"' + ///
+	`"`tab'note("Last updated by \`c(username)' on \`todaystr'", pos(7) size(2))`brek'`brek'restore`brek'`brek'"'
 	
+	}
 	
+	if "``j'_v4'" != "" { 
+	
+		// DISPERSION CHECK
+		replace command = command + ///
+			`"*------------------------------------------------------------------`brek'"' ///
+		+ `"* 	Dispersion`brek'"' + /// 
+		`"*------------------------------------------------------------------`brek'`brek'"' + ///
+		`"foreach var of varlist \`numeric_vars' {`brek'`brek'"' + ///
+		`"`tab'sum \`var'`brek'`tab'if \`r(N)' == 0 continue`brek'"' + ///
+		`"`tab'local obs = \`r(N)'`brek'"' + ///
+		`"`tab'local mean = \`r(mean)'`brek'`tab'local sd = \`r(sd)'`brek'"' + ///
+		`"`tab'local max = \`r(max)'`brek'"' + ///
+		`"`tab'local digits = ceil(log(\`max')/log(10) )+ 3`brek'`brek'"' + ///
+		`"`tab'count if \`var' < 0`brek'`tab'if \`r(N)' == 0 local lower_bound = 0`brek'"' + ///
+		`"`tab'else local lower_bound : display %-\`digits'.2f \`mean' - (3 * \`sd')`brek'`brek'"' + ///
+		`"`tab'count if \`var' < \`lower_bound'`brek'`tab'local lowers = \`r(N)'`brek'"' + ///
+		`"`tab'local lower_bound = strtrim("\`lower_bound'")`brek'`brek'"' + ///
+		`"`tab'local upper_bound : display %-\`digits'.2f \`mean' + (3 * \`sd')`brek'"' + ///
+		`"`tab'count if \`var' > \`upper_bound' & !missing(\`var')`brek'"' + ///
+		`"`tab'local uppers = \`r(N)'`brek'"' + ///
+		`"`tab'local upper_bound = strtrim("\`upper_bound'")`brek'`brek'"' + ///
+		`"`tab'histogram \`var', kdensity xline(\`upper_bound' \`lower_bound') ///`brek'"' + ///
+		`"`tab'`tab'note("Suggested lower constraint: \`lower_bound' (\`lowers' offending observations). Suggested upper constraint: \`upper_bound' (\`uppers' offending observations).", size(1.7)) ///`brek'"' + ///
+		`"`tab'`tab'title("{bf}\`: variable label \`var''", pos(11) size(2.75)) ///`brek'"' + ///
+		`"`tab'`tab'subtitle("\`obs' observations", pos(11) size(2.5)) ///`brek'"' + ///
+		`"`tab'`tab'ylabel(, grid gmax) ///`brek'"' + ///
+		`"`tab'`tab'xmlabel(\`upper_bound' \`lower_bound', labsize(*1.5) tlength(medium)) ///`brek'"' + ///
+		`"`tab'`tab'name(\`var') ///`brek'"' + ///
+		`"`tab'`tab'scheme(white_tableau)`brek'`brek'}`brek'`brek'"'
+	
+	}
 	
 }
 
@@ -361,57 +422,8 @@ file write myfile ///
 	_n "* 	Macros" _n /// 
 	"*===============================================================================" ///
 	_n(2) ///
-	"local" _tab `"today = date(c(current_date), "`datestyle'")"' _n ///
-	"local" _tab `"todaystr = string(\`today', "%td")"' _n(2) ///
-	"*===============================================================================" ///
-	_n "* 	Program Definitions" _n /// 
-	"*===============================================================================" ///
-	_n(2) "prog define dispersion_check" _n(2) ///
-	"syntax varlist" _n ///
-	"foreach var of varlist \`varlist' {" _n(2) ///
-	_tab "sum \`var'" _n _tab "local obs = \`r(N)'" _n _tab ///
-	"local mean = \`r(mean)'" _n _tab "local sd = \`r(sd)'" _n _tab ///
-	"local max = \`r(max)'" _n _tab ///
-	"local digits = ceil(log(\`max')/log(10) )+ 3" _n(2) _tab ///
-	"count if \`var' < 0" _n _tab "if \`r(N)' == 0 local lower_bound = 0" ///
-	_n _tab "else local lower_bound : display %-\`digits'.2f \`mean' - (`strictness' * \`sd')" ///
-	_n(2) _tab "count if \`var' < \`lower_bound'" _n _tab ///
-	"local lowers = \`r(N)'" _n _tab ///
-	`"local lower_bound = strtrim("\`lower_bound'")"' _n(2) _tab ///
-	"local upper_bound : display %-\`digits'.2f \`mean' + (\`strictness' * \`sd')" ///
-	_n _tab "count if \`var' > \`upper_bound' & !missing(\`var')" _n _tab ///
-	"local uppers = \`r(N)'" _n _tab ///
-	`"local upper_bound = strtrim("\`upper_bound'")"' _n(2) _tab ///
-	"histogram \`var', kdensity xline(\`upper_bound' \`lower_bound') ///" ///
-	_n _tab(2) ///
-	`"note("Suggested lower constraint: \`lower_bound' (\`lowers' offending observations). Suggested upper constraint: \`upper_bound' (\`uppers' offending observations).", size(vsmall)) ///"' ///
-	_n _tab(2) `"title("{bf}\`: variable label \`var''", pos(11) size(2.75)) ///"' ///
-	_n _tab(2) `"subtitle("\`obs' observations", pos(11) size(2.5)) ///"' ///
-	_n _tab(2) `"ylabel(, grid gmax) ///"' _n _tab(2) ///
-	`"xmlabel(\`upper_bound' \`lower_bound', labsize(*1.5) tlength(medium)) ///"' ///
-	_n _tab(2) "name(\`var')" _n(2) "}" _n(2) "end" _n(2) ///
-	`"prog define duration_graph"' _n(2) ///
-	`"preserve"' _n `"keep if `successcondition'"' _n ///
-	`"replace duration = duration * 1e2"' _n(2) ///
-	`"collapse (mean) duration, by(`enum')"' _n(2) ///
-	`"egen double duration_z = std(duration)"' _n ///
-	`"generate above = (duration_z >= 0)"' _n ///
-	`"sort duration_z, stable"' _n ///
-	`"generate rank_des = _n * 2"' _n ///
-	`"cap sdecode `enum', replace"' _n ///
-	`"labmask rank_des, value(`enum')"' _n ///
-	`"generate zero = 0"' _n ///
-	`"tostring duration, gen(duration_lab) force format(%tCMM:SS)"' _n ///
-	`"count"' _n `"local max = \`r(N)' * 2"' _n(2) ///
-	`"twoway  (rspike zero duration_z rank_des, horizontal) ///"' _n ///
-	_tab `"(scatter rank_des duration_z, msize(6) mlabel(duration_lab) ///"' ///
-	_n _tab `"mlabsize(1.6) mlabposition(0)), ///"' _n _tab ///
-	`"xlabel(-3(0.5)3, nolabels noticks) ylabel(2(2)\`max', ///"' _n _tab ///
-	`"valuelabel labsize(2)) legend(off) ///"' _n _tab ///
-	`"ytitle("Enumerator") ///"' _n _tab ///
-	`"title("{bf}Average Survey Duration", size(2.75) pos(11)) ///"' _n _tab ///
-	`"subtitle("When `successcondition'", size(2.5) pos(11)) ///"' _n _tab ///
-	`"scheme(white_tableau) ysize(8)"' _n(2) `"restore"' _n(2) `"end"' _n(2)
+	"local" _tab `"today = date(c(current_date), "DMY")"' _n ///
+	"local" _tab `"todaystr = string(\`today', "%td")"' _n(2)
 	
 file write myfile (command)
 file write myfile _n "}"
