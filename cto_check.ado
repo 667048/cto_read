@@ -16,10 +16,8 @@ syntax, ///
 	SUCCESSCONDITION(string)
 
 clear
-version 17
+version 16
 frames reset
-	
-version 17
 
 // Create a quiet environment to prevent unnecessary output
 qui { 
@@ -357,7 +355,7 @@ file write myfile ///
 	"*===============================================================================" ///
 	_n "* 	Setup" _n /// 
 	"*===============================================================================" ///
-	_n(2) "clear all" _n "version 17" _n "set more off" _n "set maxvar 30000" ///
+	_n(2) "clear all" _n "version `c(stata_version)'" _n "set more off" _n "set maxvar 30000" ///
 	_n "cap log close" _n "set trace off" _n "set linesize 200" _n(2) ///
 	"*===============================================================================" ///
 	_n "* 	Macros" _n /// 
