@@ -19,7 +19,7 @@ syntax, ///
 	FRGETVARS(namelist) ///
 	DEIDVARS(namelist)]
  
-version 17
+version 16
 
 // Create a quiet environment to prevent unnecessary output
 qui { 
@@ -902,7 +902,7 @@ file write myfile ///
 	"*===============================================================================" ///
 	_n "* 	Setup" _n /// 
 	"*===============================================================================" ///
-	_n(3) "clear all" _n "version 17" _n "set more off" _n "set maxvar 30000" ///
+	_n(3) "clear all" _n "set more off" _n "set maxvar 30000" ///
 	_n "cap log close" _n "set trace off" _n "set linesize 200" _n(3) ///
 	"*===============================================================================" ///
 	_n "* 	Macros" _n /// 
