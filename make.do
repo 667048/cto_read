@@ -3,12 +3,12 @@
 // DO NOT FORGET to update the version of the package, if changed!
 // for more information visit http://github.com/haghish/github
 
-make cto_read, replace toc pkg readme version(1.10)                          ///
+make cto_read, replace toc pkg readme version(1.1.0)                         ///
      license("Academic Free License v3.0")                                   ///
      author("Michael Rozelle")                                               ///
-     affiliation("Wageningen University and Research")                       ///
+     affiliation("Wageningen University ")                                   ///
      email("michael.rozelle@wur.nl")                                         ///
      url("")                                                                 ///
-     title("Command for cleaning SurveyCTO output data")                     ///
-     description("Command for cleaning SurveyCTO output data")               ///
-     install("cto_read.ado;cto_read.sthlp")                                                                                    
+     title("Commands for working with SurveyCTO data")                       ///
+     description("Commands for working with SurveyCTO data")                 ///
+     install("cto_read.ado;cto_check.ado;dependency.do;cto_read.sthlp")                                                   

@@ -1,10 +1,12 @@
-v 1.10
-d 'CTO_READ': Command for cleaning SurveyCTO output data
+v 1.1.0
+d 'CTO_READ': Commands for working with SurveyCTO data
 d 
-d Command for cleaning SurveyCTO output data
+d Commands for working with SurveyCTO data
 d 
-d Distribution-Date:   20231018
+d Distribution-Date:   20231122
 d License: Academic Free License v3.0
 d 
+F cto_check.ado
 F cto_read.ado
 F cto_read.sthlp
+F dependency.do

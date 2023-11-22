@@ -1,12 +1,12 @@
-_v. 1.10_  
+_v. 1.1.0_  
 
-`cto_read` : Command for cleaning SurveyCTO output data
-=======================================================
+`cto_read` : Commands for working with SurveyCTO data
+=====================================================
 
 Description
 -----------
 
-Command for cleaning SurveyCTO output data
+Commands for working with SurveyCTO data
 
 ### License
 Academic Free License v3.0
@@ -15,5 +15,5 @@ Author
 ------
 
 **Michael Rozelle**  
-Wageningen University and Research  
+Wageningen University   
 michael.rozelle@wur.nl  

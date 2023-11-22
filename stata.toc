@@ -1,8 +1,8 @@
-v 1.10
+v 1.1.0
 d Materials by Michael Rozelle
-d Wageningen University and Research
+d Wageningen University 
 d michael.rozelle@wur.nl
 
-d 'cto_read': Command for cleaning SurveyCTO output data
+d 'cto_read': Commands for working with SurveyCTO data
 
 p cto_read
