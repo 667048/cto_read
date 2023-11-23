@@ -13,8 +13,11 @@ syntax, ///
 	OUTPUT(string) ///
 	DIRECTORY(string) ///
 	ENUM(name) ///
-	SUCCESSCONDITION(string)
-
+	SUCCESSCONDITION(string) ///
+	UNIQUEID(namelist) ///
+	RESPONDENTNAME(name) ///
+	DUPLICATESFILE(string)
+	
 clear
 version 16
 frames reset
@@ -337,7 +340,7 @@ forvalues j = 0/`repeat_groups' {
 		
 	}
 	
-	// SURVEY DURATION CHECK
+	// SURVEY DURATION AND DUPLICATES CHECKS
 	if `j' == 0 {
 		
 		replace command = command + ///
@@ -367,6 +370,30 @@ forvalues j = 0/`repeat_groups' {
 	`"`tab'scheme(white_tableau) ysize(\`ysize') ///`brek'"' + ///
 	`"`tab'note("Last updated by \`c(username)' on \`todaystr'", pos(7) size(2))`brek'`brek'restore`brek'`brek'"'
 	
+		replace command = command + ///
+		`"*------------------------------------------------------------------`brek'"' ///
+		+ `"* 	Duplicates`brek'"' + /// 
+		`"*------------------------------------------------------------------`brek'`brek'"' + ///
+		`"tempvar tag group`brek'duplicates tag `uniqueid', gen(\`tag')`brek'"' + ///
+		`"egen \`group' = group(`uniqueid')`brek'"' + ///
+		`"file open myfile using "`macval(duplicatesfile)'", write replace`brek'`brek'"' + ///
+		`"levelsof \`group' if \`tag', clean local(groups)`brek'"' + ///
+		`"foreach g in \`groups' {`brek'`brek'"' + ///
+		`"`tab'levelsof key if \`group' == \`g', clean local(keys)`brek'"' + ///
+		`"`tab'local i = 1`brek'"' + ///
+		`"`tab'foreach k in \`keys' {`brek'`brek'"' + ///
+		`"`tab'`tab'if \`i' == 1 {`brek'`brek'"' + ///
+		`"`tab'`tab'`tab'levelsof `respondentname' if key == "\`k'", clean local(name)`brek'"' + ///
+		`"`tab'`tab'`tab'levelsof key if \`group' == \`g', local(keyslist) separate(", ///\`=char(10)'\`=char(9)'")`brek'"' + ///
+		`"`tab'`tab'`tab'file write myfile "// duplicate entries for \`name'" _n ///`brek'"' + ///
+		`"`tab'`tab'`tab'`tab'`"browse if inlist(key, \`keyslist')"' _n`brek'`brek'"' + ///
+		`"`tab'`tab'}`brek'`brek'"' + ///
+		`"`tab'`tab'file write myfile `"// drop if key == "\`k'""' _n`brek'"' + ///
+		`"`tab'`tab'local ++i`brek'`brek'"' + ///
+		`"`tab'}`brek'`brek'"' + ///
+		`"`tab'file write myfile _n`brek'`brek'"' + ///
+		`"}`brek'`brek'file close myfile`brek'`brek'"'
+		
 	}
 	
 	if "``j'_v4'" != "" { 
@@ -396,7 +423,7 @@ forvalues j = 0/`repeat_groups' {
 		`"`tab'`tab'subtitle("\`obs' observations", pos(11) size(2.5)) ///`brek'"' + ///
 		`"`tab'`tab'ylabel(, grid gmax) ///`brek'"' + ///
 		`"`tab'`tab'xmlabel(\`upper_bound' \`lower_bound', labsize(*1.5) tlength(medium)) ///`brek'"' + ///
-		`"`tab'`tab'name(\`var') ///`brek'"' + ///
+		`"`tab'`tab'name(\`var') freq ///`brek'"' + ///
 		`"`tab'`tab'scheme(white_tableau)`brek'`brek'}`brek'`brek'"'
 	
 	}
