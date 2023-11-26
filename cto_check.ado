@@ -2,10 +2,10 @@
 *! Author: Michael Rozelle <michael.rozelle@wur.nl>
 *! Version 0.0.1  Modified:  March 2023
 
-// Drop the cto_read program if it already exists
+// Drop the cto_check program if it already exists
 cap program drop cto_check
 
-// Define the cto_read program, which takes three arguments
+// Define the cto_check program
 program define cto_check, rclass
 // instrument, then dataset, then dofile
 syntax, ///
@@ -16,7 +16,8 @@ syntax, ///
 	SUCCESSCONDITION(string) ///
 	UNIQUEID(namelist) ///
 	RESPONDENTNAME(name) ///
-	DUPLICATESFILE(string)
+	CORRECTIONSFILE(string) ///
+	ENUMCOMMENTS(name)
 	
 clear
 version 16
@@ -340,7 +341,7 @@ forvalues j = 0/`repeat_groups' {
 		
 	}
 	
-	// SURVEY DURATION AND DUPLICATES CHECKS
+	// SURVEY DURATION, DUPLICATES, AND COMMENT CHECKS
 	if `j' == 0 {
 		
 		replace command = command + ///
@@ -376,7 +377,7 @@ forvalues j = 0/`repeat_groups' {
 		`"*------------------------------------------------------------------`brek'`brek'"' + ///
 		`"tempvar tag group`brek'duplicates tag `uniqueid', gen(\`tag')`brek'"' + ///
 		`"egen \`group' = group(`uniqueid')`brek'"' + ///
-		`"file open myfile using "`macval(duplicatesfile)'", write replace`brek'`brek'"' + ///
+		`"file open myfile using "`macval(correctionsfile)'", write replace`brek'`brek'"' + ///
 		`"levelsof \`group' if \`tag', clean local(groups)`brek'"' + ///
 		`"foreach g in \`groups' {`brek'`brek'"' + ///
 		`"`tab'levelsof key if \`group' == \`g', clean local(keys)`brek'"' + ///
@@ -392,6 +393,25 @@ forvalues j = 0/`repeat_groups' {
 		`"`tab'`tab'local ++i`brek'`brek'"' + ///
 		`"`tab'}`brek'`brek'"' + ///
 		`"`tab'file write myfile _n`brek'`brek'"' + ///
+		`"}`brek'`brek'file close myfile`brek'`brek'"'
+		
+		replace command = command + ///
+		`"*------------------------------------------------------------------`brek'"' ///
+		+ `"* 	Enumerator Comments`brek'"' + /// 
+		`"*------------------------------------------------------------------`brek'`brek'"' + ///
+		`"file open myfile using "`macval(correctionsfile)'", write append`brek'`brek'"' + ///
+		`"levelsof key if !missing(`enumcomments'), local(keys) clean`brek'"' + ///
+		`"foreach k in \`keys' {`brek'`brek'"' + ///
+		`"`tab'levelsof `enum' if key == "\`k'", local(enumr) `brek'"' + ///
+		`"`tab'levelsof `enumcomments' if key == "\`k'", local(comment)`brek'"' + ///
+		`"`tab'levelsof today if key == "\`k'", local(date) clean`brek'"' + ///
+		`"`tab'local comment : subinstr local comment "\`=char(10)'" " ", all`brek'"' + ///
+		`"`tab'local comment = ustrto(\`comment', "ascii", 2)`brek'`brek'"' + ///
+		`"`tab'file write myfile ///`brek'"' + ///
+		`"`tab'`tab'`"// \`enumr' wrote on \`today':"' _n ///`brek'"' + ///
+		`"`tab'`tab'`"// \`comment'"' _n ///`brek'"' + ///
+		`"`tab'`tab'`"// ... if key == `"\`k'"'"' _n ///`brek'"' + ///
+		`"`tab'`tab'`"// replace `enumcomments' = "" if key == `"\`k'"'"' _n(2)`brek'`brek'"' + ///
 		`"}`brek'`brek'file close myfile`brek'`brek'"'
 		
 	}
