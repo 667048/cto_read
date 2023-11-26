@@ -403,12 +403,15 @@ forvalues j = 0/`repeat_groups' {
 		`"levelsof key if !missing(`enumcomments'), local(keys) clean`brek'"' + ///
 		`"foreach k in \`keys' {`brek'`brek'"' + ///
 		`"`tab'levelsof `enum' if key == "\`k'", local(enumr) `brek'"' + ///
+		`"`tab'elabel list (`enum')`brek'"' + ///
+		`"`tab'local enumr: label \`r(name)' \`enumr'`brek'`brek'"' + ///
 		`"`tab'levelsof `enumcomments' if key == "\`k'", local(comment)`brek'"' + ///
 		`"`tab'levelsof today if key == "\`k'", local(date) clean`brek'"' + ///
+		`"`tab'local date: display %tddd_Month \`date'`brek'"' + ///
 		`"`tab'local comment : subinstr local comment "\`=char(10)'" " ", all`brek'"' + ///
 		`"`tab'local comment = ustrto(\`comment', "ascii", 2)`brek'`brek'"' + ///
 		`"`tab'file write myfile ///`brek'"' + ///
-		`"`tab'`tab'`"// \`enumr' wrote on \`today':"' _n ///`brek'"' + ///
+		`"`tab'`tab'`"// \`enumr' wrote on \`date':"' _n ///`brek'"' + ///
 		`"`tab'`tab'`"// \`comment'"' _n ///`brek'"' + ///
 		`"`tab'`tab'`"// ... if key == `"\`k'"'"' _n ///`brek'"' + ///
 		`"`tab'`tab'`"// replace `enumcomments' = "" if key == `"\`k'"'"' _n(2)`brek'`brek'"' + ///
