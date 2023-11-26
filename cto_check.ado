@@ -431,7 +431,7 @@ forvalues j = 0/`repeat_groups' {
 		`"`tab'local obs = \`r(N)'`brek'"' + ///
 		`"`tab'local mean = \`r(mean)'`brek'`tab'local sd = \`r(sd)'`brek'"' + ///
 		`"`tab'local max = \`r(max)'`brek'"' + ///
-		`"`tab'local digits = ceil(log(\`max')/log(10) )+ 3`brek'`brek'"' + ///
+		`"`tab'local digits = ceil(log(max(\`max', 1))/log(10) )+ 3`brek'`brek'"' + ///
 		`"`tab'count if \`var' < 0`brek'`tab'if \`r(N)' == 0 local lower_bound = 0`brek'"' + ///
 		`"`tab'else local lower_bound : display %-\`digits'.2f \`mean' - (3 * \`sd')`brek'`brek'"' + ///
 		`"`tab'count if \`var' < \`lower_bound'`brek'`tab'local lowers = \`r(N)'`brek'"' + ///
