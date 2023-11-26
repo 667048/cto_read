@@ -424,7 +424,7 @@ forvalues j = 0/`repeat_groups' {
 		+ `"* 	Dispersion`brek'"' + /// 
 		`"*------------------------------------------------------------------`brek'`brek'"' + ///
 		`"foreach var of varlist \`numeric_vars' {`brek'`brek'"' + ///
-		`"`tab'sum \`var'`brek'`tab'if \`r(N)' == 0 continue`brek'"' + ///
+		`"`tab'sum \`var'`brek'`tab'if \`r(N)' <= 3 continue`brek'"' + ///
 		`"`tab'local obs = \`r(N)'`brek'"' + ///
 		`"`tab'local mean = \`r(mean)'`brek'`tab'local sd = \`r(sd)'`brek'"' + ///
 		`"`tab'local max = \`r(max)'`brek'"' + ///
