@@ -17,7 +17,8 @@ syntax, ///
 	UNIQUEID(namelist) ///
 	RESPONDENTNAME(name) ///
 	CORRECTIONSFILE(string) ///
-	ENUMCOMMENTS(name)
+	ENUMCOMMENTS(name) ///
+	[SAVEGRAPHICS(string)]
 	
 clear
 version 16
@@ -369,7 +370,17 @@ forvalues j = 0/`repeat_groups' {
 	`"`tab'title("{bf}Average Survey Duration", size(2.75) pos(11)) ///`brek'"' + ///
 	`"`tab'subtitle("When `successcondition'", size(2.5) pos(11)) ///`brek'"' + ///
 	`"`tab'scheme(white_tableau) ysize(\`ysize') ///`brek'"' + ///
-	`"`tab'note("Last updated by \`c(username)' on \`todaystr'", pos(7) size(2))`brek'`brek'restore`brek'`brek'"'
+	`"`tab'note("Last updated by \`c(username)' on \`todaystr'", pos(7) size(2))`brek'"'
+	
+		if "`savegraphics'" != "" {
+			
+			replace command = command + ///
+				`"graph export "`macval(savegraphics)'/cto_duration.png", as(png) replace`brek'"'
+			
+		}
+		
+		replace command = command + ///
+				`"`brek'restore`brek'`brek'"'
 	
 		replace command = command + ///
 		`"*------------------------------------------------------------------`brek'"' ///
@@ -447,9 +458,31 @@ forvalues j = 0/`repeat_groups' {
 		`"`tab'`tab'ylabel(, grid gmax) ///`brek'"' + ///
 		`"`tab'`tab'xmlabel(\`upper_bound' \`lower_bound', labsize(*1.5) tlength(medium)) ///`brek'"' + ///
 		`"`tab'`tab'name(\`var') freq ///`brek'"' + ///
-		`"`tab'`tab'scheme(white_tableau)`brek'`brek'}`brek'`brek'"'
+		`"`tab'`tab'scheme(white_tableau)`brek'"'
+		
+		if "`savegraphics'" != "" {
+			
+			replace command = command + ///
+				`"`tab'graph export "`macval(savegraphics)'/\`var'.png", as(png) replace`brek'"'
+			
+		}
+		
+		replace command = command + ///
+			`"`brek'}`brek'`brek'"'
 	
 	}
+	
+	// OTHER VARIABLES 
+	replace command = command + ///
+		`"*------------------------------------------------------------------`brek'"' ///
+		+ `"* 	'Other' Variables`brek'"' + /// 
+		`"*------------------------------------------------------------------`brek'`brek'"' + ///
+		`"findregex, re("_other\$")`brek'"' + ///
+		`"if "\`s(varlist)'" != "" {`brek'`brek'"' + ///
+		`"`tab'foreach var of varlist \`s(varlist)' {"' + ///
+		`"`tab'`tab'tab \`var'`brek'`brek'"' + ///
+		`"`tab'}`brek'`brek'"' + ///
+		`"}`brek'`brek'"'
 	
 }
 

@@ -1,5 +1,5 @@
-local dependencies moss egenmore
-local aux moss egenmore.sthlp
+local dependencies moss egenmore elabel findregex
+local aux moss egenmore.sthlp elabel findregex
 
 foreach dependency in `dependencies' {
 	
