@@ -479,8 +479,9 @@ forvalues j = 0/`repeat_groups' {
 		`"*------------------------------------------------------------------`brek'`brek'"' + ///
 		`"findregex, re("_other\$")`brek'"' + ///
 		`"if "\`s(varlist)'" != "" {`brek'`brek'"' + ///
-		`"`tab'foreach var of varlist \`s(varlist)' {"' + ///
-		`"`tab'`tab'tab \`var'`brek'`brek'"' + ///
+		`"`tab'foreach var of varlist \`s(varlist)' {`brek'`brek'"' + ///
+		`"`tab'`tab'count if !missing(\`var')`brek'"' + ///
+		`"`tab'`tab'if \`r(N)' != 0 noisily tab \`var'`brek'`brek'"' + ///
 		`"`tab'}`brek'`brek'"' + ///
 		`"}`brek'`brek'"'
 	
