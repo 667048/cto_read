@@ -236,12 +236,18 @@ pretty quickly if a variable needs attention.
 frame rename default instrument
 drop if question_type < 0
 
+cap confirm variable repeat_group_1
+if !_rc {
 reshape long repeat_group_@, i(name) j(repeat_num)
 replace repeat_num = . if missing(repeat_group_)
 bysort name: egen repeat_group = max(repeat_num)
 keep if repeat_group == repeat_num
 bysort name: keep if _n == 1
 drop repeat_num repeat_group_
+}
+else {
+	gen repeat_group = .
+}
 
 gen dataset = ""
 replace dataset = "survey" if missing(repeat_group)
